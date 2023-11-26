@@ -6,7 +6,7 @@
     android:background="#EBEBEB"
     tools:context=".MainActivity">
 
-    <com.qw.row.library.ContainerView
+    <com.qw.row.ContainerView
         android:id="@+id/mContainerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 浅灰色分割线 -->
+    <color name="widgets_general_row_pressed">#D9D9D9</color>
+    <color name="widgets_general_row_normal">#ffffff</color>
+    <color name="widgets_general_row_line">#e5e5e5</color>
+</resources>

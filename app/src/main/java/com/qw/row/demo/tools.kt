@@ -1,4 +1,4 @@
-package com.qw.row.library
+package com.qw.row.demo
 
 import android.content.res.Resources
 

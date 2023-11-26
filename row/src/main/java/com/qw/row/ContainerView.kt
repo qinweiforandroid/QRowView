@@ -1,4 +1,4 @@
-package com.qw.row.library
+package com.qw.row
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,6 +6,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.LinearLayout
+import com.qw.row.core.AbsGroupView
+import com.qw.row.core.IGroupDescriptor
+import com.qw.row.core.OnRowClickListener
 
 class ContainerView : LinearLayout, OnTouchListener {
     private var listener: OnRowClickListener? = null
@@ -33,11 +36,11 @@ class ContainerView : LinearLayout, OnTouchListener {
     fun notifyDataChanged() {
         removeAllViews()
         if (descriptor.groups.size > 0) {
-            var groupView: GroupView
+            var groupView: AbsGroupView
             val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            params.topMargin = descriptor.topMargin
+            params.topMargin = descriptor.space
             for (i in descriptor.groups.indices) {
-                groupView = GroupView(context)
+                groupView = createGroup(descriptor.groups[i].getViewClass())
                 groupView.initData(descriptor.groups[i], listener)
                 groupView.notifyDataChanged()
                 addView(groupView, params)
@@ -45,6 +48,12 @@ class ContainerView : LinearLayout, OnTouchListener {
         } else {
             visibility = GONE
         }
+    }
+
+    private fun createGroup(clazz: Class<out AbsGroupView>): AbsGroupView {
+        val constructor = clazz.getDeclaredConstructor(Context::class.java)
+        constructor.isAccessible = true
+        return constructor.newInstance(context) as AbsGroupView
     }
 
     /**
@@ -82,3 +91,5 @@ class ContainerView : LinearLayout, OnTouchListener {
         return false
     }
 }
+
+class ContainerDescriptor(var groups: ArrayList<IGroupDescriptor>, var space: Int)

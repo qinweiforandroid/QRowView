@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- font sizes -->
+    <dimen name="row_font_larger">22sp</dimen>
+    <dimen name="row_font_large">18sp</dimen>
+    <dimen name="row_font_normal">15sp</dimen>
+    <dimen name="row_font_small">12sp</dimen>
+
+    <!-- typical spacing between two views -->
+    <dimen name="row_spacing_huge">40dp</dimen>
+    <dimen name="row_spacing_large">24dp</dimen>
+    <dimen name="row_spacing_normal">16dp</dimen>
+    <dimen name="row_spacing_small">8dp</dimen>
+    <dimen name="row_spacing_tiny">4dp</dimen>
+
+
+    <!-- generalRowView start -->
+    <dimen name="widget_general_row_padding">8dp</dimen>
+    <dimen name="row_icon_size_width">28dp</dimen>
+    <dimen name="row_icon_size_height">28dp</dimen>
+    <dimen name="widget_general_row_label_margin_left">16dp</dimen>
+</resources>
