@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.qw.row.library'
+    namespace 'com.qw.row'
     compileSdk 33
 
     defaultConfig {
