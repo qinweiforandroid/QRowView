@@ -1,27 +1,17 @@
 package com.qw.row.item
 
 import android.content.Context
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.qw.row.R
+import com.qw.row.core.AbsRowDescriptor
 import com.qw.row.core.AbsRowView
-import com.qw.row.core.IRowDescriptor
-import com.qw.row.core.OnRowClickListener
-import com.qw.row.library.R
 
-class AndroidRowView : AbsRowView, View.OnClickListener {
+class AndroidRowView(context: Context) : AbsRowView<AndroidDescriptor>(context), View.OnClickListener {
     private var mRowIconImg: ImageView
     private var mRowLabel: TextView
-    private lateinit var descriptor: AndroidDescriptor
-    private var listener: OnRowClickListener? = null
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
-    )
 
     init {
         val padding = context.resources.getDimension(R.dimen.widget_general_row_padding).toInt()
@@ -32,7 +22,7 @@ class AndroidRowView : AbsRowView, View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        listener?.onRowClick(this)
+        listener?.onRowChanged(this)
     }
 
     override fun notifyDataChanged() {
@@ -42,22 +32,16 @@ class AndroidRowView : AbsRowView, View.OnClickListener {
             mRowIconImg.setBackgroundResource(descriptor.icon)
         }
         mRowLabel.text = descriptor.label
-        if (descriptor.id != 0) {
+        if (descriptor.rowId != 0) {
             setOnClickListener(this)
             setBackgroundResource(R.drawable.widgets_general_row_select)
         }
     }
+}
 
-    override fun getRowId(): Int {
-        return descriptor.id
-    }
-
-    override fun initData(rowDescriptor: IRowDescriptor, listener: OnRowClickListener?) {
-        if (rowDescriptor is AndroidDescriptor) {
-            this.listener = listener
-            descriptor = rowDescriptor
-        } else {
-            throw IllegalArgumentException("GeneralRowDescriptor can use")
-        }
+class AndroidDescriptor(id: Int = 0, var icon: Int = 0, var label: String = "") :
+    AbsRowDescriptor(id) {
+    override fun getViewClass(): Class<*> {
+        return AndroidRowView::class.java
     }
 }

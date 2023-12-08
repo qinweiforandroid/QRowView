@@ -1,74 +1,56 @@
 package com.qw.row.demo
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.qw.row.ContainerDescriptor
 import com.qw.row.ContainerView
+import com.qw.row.core.AbsGroupDescriptor
 import com.qw.row.core.AbsRowView
-import com.qw.row.core.IGroupDescriptor
-import com.qw.row.core.OnRowClickListener
+import com.qw.row.core.OnRowChangedListener
 import com.qw.row.group.GroupDescriptor
 import com.qw.row.item.AndroidDescriptor
-import com.qw.row.item.IosDescriptor
 
-class MainActivity : AppCompatActivity(), OnRowClickListener {
+class MainActivity : AppCompatActivity(), OnRowChangedListener {
 
     private lateinit var mContainerView: ContainerView
 
-    companion object {
-        val id_friend = 1
-        val id_scan = 2
-        val id_shark = 3
-        val id_look = 4
-        val id_search = 5
-        val id_nearby = 6
-        val id_shop = 7
-        val id_game = 8
-        val id_mini = 9
-        val id_open_close = 10
-    }
+    private val ROW_BANK = 2
+    private val ROW_COLLECT = 3
+    private val ROW_FRIEND = 4
+    private val ROW_EMOJI = 5
+    private val ROW_SETTING = 6
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mContainerView = findViewById(R.id.mContainerView)
-        val groups = ArrayList<IGroupDescriptor>()
-        groups.add(
-            genGroup().addRow(
-                IosDescriptor(id_mini, R.mipmap.ic_launcher, "手机号")
-                    .setValue("17091314320")
-            )
-        )
+        val groups = ArrayList<AbsGroupDescriptor>()
+        groups.add(genGroup().apply {
+            addRow(AndroidDescriptor(ROW_BANK, R.drawable.more_my_bank_card, "服务"))
+        })
+        groups.add(genGroup().apply {
+            addRow(AndroidDescriptor(ROW_COLLECT, R.drawable.more_my_favorite, "收藏"))
+            addRow(AndroidDescriptor(ROW_FRIEND, R.drawable.more_my_album, "朋友圈"))
+            addRow(AndroidDescriptor(ROW_EMOJI, R.drawable.more_emoji_store, "表情"))
+        })
 
         groups.add(genGroup().apply {
-            addRow(AndroidDescriptor(id_scan, R.mipmap.ic_launcher, "扫一扫"))
-            addRow(AndroidDescriptor(id_shark, R.mipmap.ic_launcher, "摇一摇"))
-        })
-        groups.add(genGroup().apply {
-            addRow(AndroidDescriptor(id_search, R.mipmap.ic_launcher, "搜一搜"))
-        })
-        groups.add(genGroup().apply {
-            addRow(AndroidDescriptor(id_nearby, R.mipmap.ic_launcher, "附近的人"))
-        })
-        groups.add(genGroup().apply {
-            addRow(AndroidDescriptor(id_shop, R.mipmap.ic_launcher, "购物"))
-            addRow(AndroidDescriptor(id_game, R.mipmap.ic_launcher, "游戏"))
+            addRow(AndroidDescriptor(ROW_SETTING, R.drawable.more_setting, "设置"))
         })
         mContainerView.initData(ContainerDescriptor(groups, dip2px(10f)), this)
         mContainerView.notifyDataChanged()
     }
 
     private fun genGroup(): GroupDescriptor {
-        return GroupDescriptor.Builder()
-            .setBackgroundColor(Color.WHITE)
+        return GroupDescriptor().setBackgroundColor(Color.WHITE)
             .setDividerColor(Color.parseColor("#e5e5e5"))
             .setDividerHeight(dip2px(1f))
             .setDividerLeftMargin(dip2px(8f))
-            .builder()
     }
 
-    override fun onRowClick(rowView: AbsRowView) {
-
+    override fun onRowChanged(row: AbsRowView<*>) {
+        Toast.makeText(this, "id:${row.id}", Toast.LENGTH_SHORT).show()
     }
 }

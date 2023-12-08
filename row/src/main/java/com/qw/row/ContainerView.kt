@@ -6,12 +6,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.LinearLayout
+import com.qw.row.core.AbsGroupDescriptor
 import com.qw.row.core.AbsGroupView
-import com.qw.row.core.IGroupDescriptor
-import com.qw.row.core.OnRowClickListener
+import com.qw.row.core.AbsRowDescriptor
+import com.qw.row.core.AbsRowView
+import com.qw.row.core.OnRowChangedListener
 
 class ContainerView : LinearLayout, OnTouchListener {
-    private var listener: OnRowClickListener? = null
+    private var listener: OnRowChangedListener? = null
     private lateinit var descriptor: ContainerDescriptor
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
@@ -28,20 +30,29 @@ class ContainerView : LinearLayout, OnTouchListener {
         setOnTouchListener(this)
     }
 
-    fun initData(descriptor: ContainerDescriptor, listener: OnRowClickListener?) {
+    fun initData(descriptor: ContainerDescriptor, listener: OnRowChangedListener?) {
         this.descriptor = descriptor
         this.listener = listener
+    }
+
+    fun notifyDataChanged(rowId: Int, descriptor: AbsRowDescriptor) {
+        val row = findViewById<View>(rowId) as? AbsRowView<AbsRowDescriptor>
+        if (row != null) {
+            row.notifyDataChanged(descriptor)
+        } else {
+            require(!BuildConfig.DEBUG) { "can't find the row by id" }
+        }
     }
 
     fun notifyDataChanged() {
         removeAllViews()
         if (descriptor.groups.size > 0) {
-            var groupView: AbsGroupView
+            var groupView: AbsGroupView<AbsGroupDescriptor>
             val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             params.topMargin = descriptor.space
             for (i in descriptor.groups.indices) {
                 groupView = createGroup(descriptor.groups[i].getViewClass())
-                groupView.initData(descriptor.groups[i], listener)
+                groupView.initData(descriptor.groups[i],listener)
                 groupView.notifyDataChanged()
                 addView(groupView, params)
             }
@@ -50,10 +61,10 @@ class ContainerView : LinearLayout, OnTouchListener {
         }
     }
 
-    private fun createGroup(clazz: Class<out AbsGroupView>): AbsGroupView {
+    private fun createGroup(clazz: Class<*>): AbsGroupView<AbsGroupDescriptor> {
         val constructor = clazz.getDeclaredConstructor(Context::class.java)
         constructor.isAccessible = true
-        return constructor.newInstance(context) as AbsGroupView
+        return constructor.newInstance(context) as AbsGroupView<AbsGroupDescriptor>
     }
 
     /**
@@ -92,4 +103,4 @@ class ContainerView : LinearLayout, OnTouchListener {
     }
 }
 
-class ContainerDescriptor(var groups: ArrayList<IGroupDescriptor>, var space: Int)
+class ContainerDescriptor(var groups: ArrayList<AbsGroupDescriptor>, var space: Int)

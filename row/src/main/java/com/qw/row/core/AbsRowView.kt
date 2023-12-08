@@ -1,46 +1,46 @@
 package com.qw.row.core
 
 import android.content.Context
-import android.util.AttributeSet
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 
-abstract class AbsRowView : ConstraintLayout {
+abstract class AbsRowView<T : AbsRowDescriptor> : ConstraintLayout {
+    protected var listener: OnRowChangedListener? = null
+    protected lateinit var descriptor: T
+
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
+
+    fun setOnRowChangedListener(listener: OnRowChangedListener?) {
+        this.listener = listener
+    }
 
     /**
      * @param rowDescriptor
-     * @param listener
      */
-    abstract fun initData(rowDescriptor: IRowDescriptor, listener: OnRowClickListener?)
+    fun initData(rowDescriptor: T) {
+        this.descriptor = rowDescriptor
+        id = this.descriptor.rowId
+    }
+
+    fun notifyDataChanged(rowDescriptor: T) {
+        initData(rowDescriptor)
+        notifyDataChanged()
+    }
 
     /**
      * 更新ui
      */
     abstract fun notifyDataChanged()
-
-    /**
-     * 获取id
-     *
-     * @return
-     */
-    abstract fun getRowId(): Int
 }
 
-interface IRowDescriptor {
-    fun getViewClass(): Class<out AbsRowView>
+abstract class AbsRowDescriptor constructor(var rowId: Int = View.NO_ID) {
+    abstract fun getViewClass(): Class<*>
 }
 
-interface OnRowClickListener {
+interface OnRowChangedListener {
     /**
-     * row被点击
      *
-     * @param rowView
+     * @param rowId
      */
-    fun onRowClick(rowView: AbsRowView)
+    fun onRowChanged(rowView: AbsRowView<*>)
 }

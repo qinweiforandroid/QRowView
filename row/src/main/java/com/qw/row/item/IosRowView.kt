@@ -1,32 +1,19 @@
 package com.qw.row.item
 
 import android.content.Context
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.qw.row.R
+import com.qw.row.core.AbsRowDescriptor
 import com.qw.row.core.AbsRowView
-import com.qw.row.core.IRowDescriptor
-import com.qw.row.core.OnRowClickListener
-import com.qw.row.library.R
 
-class IosRowView : AbsRowView, View.OnClickListener {
+class IosRowView(context: Context) : AbsRowView<IosDescriptor>(context), View.OnClickListener {
     private var mWidgetRowActionImg: ImageView
     private var mWidgetRowIconImg: ImageView
     private var mWidgetRowLabel: TextView
-    private var listener: OnRowClickListener? = null
-    private lateinit var rowDescriptor: IosDescriptor
     private var mWidgetRowValueLabel: TextView
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
-
 
     init {
         LayoutInflater.from(context).inflate(R.layout.widget_row_ios, this)
@@ -39,18 +26,18 @@ class IosRowView : AbsRowView, View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        listener?.onRowClick(this)
+        listener?.onRowChanged(this)
     }
 
     override fun notifyDataChanged() {
-        if (rowDescriptor.icon == 0) {
+        if (descriptor.icon == 0) {
             mWidgetRowIconImg.visibility = GONE
         } else {
-            mWidgetRowIconImg.setBackgroundResource(rowDescriptor.icon)
+            mWidgetRowIconImg.setBackgroundResource(descriptor.icon)
         }
-        mWidgetRowLabel.text = rowDescriptor.label
-        mWidgetRowValueLabel.text = rowDescriptor.getValue()
-        if (rowDescriptor.id != 0) {
+        mWidgetRowLabel.text = descriptor.label
+        mWidgetRowValueLabel.text = descriptor.getValue()
+        if (descriptor.rowId > 0) {
             setBackgroundResource(R.drawable.widgets_general_row_select)
             mWidgetRowActionImg.setBackgroundResource(R.drawable.action_row)
             mWidgetRowActionImg.visibility = VISIBLE
@@ -59,13 +46,21 @@ class IosRowView : AbsRowView, View.OnClickListener {
             mWidgetRowActionImg.visibility = GONE
         }
     }
+}
 
-    override fun getRowId(): Int {
-        return rowDescriptor.id
+class IosDescriptor(id: Int = 0, var icon: Int = 0, var label: String = "") : AbsRowDescriptor(id) {
+    private var value: String = ""
+
+    fun setValue(value: String): IosDescriptor {
+        this.value = value
+        return this
     }
 
-    override fun initData(rowDescriptor: IRowDescriptor, listener: OnRowClickListener?) {
-        this.rowDescriptor = rowDescriptor as IosDescriptor
-        this.listener = listener
+    fun getValue(): String {
+        return value
+    }
+
+    override fun getViewClass(): Class<*> {
+        return IosRowView::class.java
     }
 }
