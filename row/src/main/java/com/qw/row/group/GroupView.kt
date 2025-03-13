@@ -5,16 +5,18 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
 import com.qw.row.R
-import com.qw.row.core.AbsGroupView
 import com.qw.row.core.AbsGroupDescriptor
+import com.qw.row.core.AbsGroupView
 import com.qw.row.core.AbsRowDescriptor
-import com.qw.row.core.OnRowChangedListener
 
 class GroupView : AbsGroupView<GroupDescriptor> {
     private var mGroupView: LinearLayout
+    private var mGroupViewTitleLabel: TextView
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -22,10 +24,13 @@ class GroupView : AbsGroupView<GroupDescriptor> {
     init {
         LayoutInflater.from(context).inflate(R.layout.widget_row_group_general, this)
         mGroupView = findViewById(R.id.mGroupViewContainer)
+        mGroupViewTitleLabel = findViewById(R.id.mGroupViewTitleLabel)
     }
 
     override fun notifyDataChanged() {
         if (groupDescriptor.rowDescriptors.size > 0) {
+            mGroupViewTitleLabel.isVisible = groupDescriptor.title.isNotEmpty()
+            mGroupViewTitleLabel.text = groupDescriptor.title
             if (groupDescriptor.backgroundColor != 0) {
                 mGroupView.setBackgroundColor(groupDescriptor.backgroundColor)
             }
@@ -58,7 +63,7 @@ class GroupView : AbsGroupView<GroupDescriptor> {
     }
 }
 
-class GroupDescriptor : AbsGroupDescriptor() {
+class GroupDescriptor(val title: String = "") : AbsGroupDescriptor() {
     internal var background: Int = 0
     internal var backgroundColor: Int = 0
     internal val rowDescriptors = ArrayList<AbsRowDescriptor>()
@@ -101,7 +106,6 @@ class GroupDescriptor : AbsGroupDescriptor() {
         this.dividerResource = resourceId
         return this
     }
-
 
     override fun getViewClass(): Class<*> {
         return GroupView::class.java
