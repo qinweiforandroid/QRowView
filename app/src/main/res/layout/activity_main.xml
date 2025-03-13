@@ -5,8 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.qw.row.ContainerView
-        android:id="@+id/mContainerView"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.qw.row.ContainerView
+            android:id="@+id/mContainerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

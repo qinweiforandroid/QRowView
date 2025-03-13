@@ -1,36 +1,26 @@
-package com.qw.row.group
+package com.qw.row.demo.ext
 
 import android.content.Context
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.core.view.isVisible
-import com.qw.row.R
 import com.qw.row.core.AbsGroupDescriptor
 import com.qw.row.core.AbsGroupView
 import com.qw.row.core.AbsRowDescriptor
+import com.qw.row.demo.R
 
-class GroupView : AbsGroupView<GroupDescriptor> {
+class CardGroupView(context: Context) : AbsGroupView<CardGroupDescriptor>(context) {
     private var mGroupView: LinearLayout
-    private var mGroupViewTitleLabel: TextView
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.widget_group_general, this)
+        LayoutInflater.from(context).inflate(R.layout.widget_group_card, this)
         mGroupView = findViewById(R.id.mGroupViewContainer)
-        mGroupViewTitleLabel = findViewById(R.id.mGroupViewTitleLabel)
     }
 
     override fun notifyDataChanged() {
         if (groupDescriptor.rowDescriptors.size > 0) {
-            mGroupViewTitleLabel.isVisible = groupDescriptor.title.isNotEmpty()
-            mGroupViewTitleLabel.text = groupDescriptor.title
             if (groupDescriptor.backgroundColor != 0) {
                 mGroupView.setBackgroundColor(groupDescriptor.backgroundColor)
             }
@@ -63,7 +53,7 @@ class GroupView : AbsGroupView<GroupDescriptor> {
     }
 }
 
-class GroupDescriptor(val title: String = "") : AbsGroupDescriptor() {
+class CardGroupDescriptor : AbsGroupDescriptor() {
     internal var background: Int = 0
     internal var backgroundColor: Int = 0
     internal val rowDescriptors = ArrayList<AbsRowDescriptor>()
@@ -72,42 +62,42 @@ class GroupDescriptor(val title: String = "") : AbsGroupDescriptor() {
     internal var dividerHeight = 0
     internal var dividerLeftMargin = 0
 
-    fun addRow(descriptor: AbsRowDescriptor): GroupDescriptor {
+    fun addRow(descriptor: AbsRowDescriptor): CardGroupDescriptor {
         rowDescriptors.add(descriptor)
         return this
     }
 
-    fun setBackground(@DrawableRes background: Int): GroupDescriptor {
+    fun setBackground(@DrawableRes background: Int): CardGroupDescriptor {
         this.background = background
         return this
     }
 
-    fun setBackgroundColor(@ColorInt backgroundColor: Int): GroupDescriptor {
+    fun setBackgroundColor(@ColorInt backgroundColor: Int): CardGroupDescriptor {
         this.backgroundColor = backgroundColor
         return this
     }
 
-    fun setDividerColor(color: Int): GroupDescriptor {
+    fun setDividerColor(color: Int): CardGroupDescriptor {
         this.dividerColor = color
         return this
     }
 
-    fun setDividerHeight(height: Int): GroupDescriptor {
+    fun setDividerHeight(height: Int): CardGroupDescriptor {
         this.dividerHeight = height
         return this
     }
 
-    fun setDividerLeftMargin(dividerLeftMargin: Int): GroupDescriptor {
+    fun setDividerLeftMargin(dividerLeftMargin: Int): CardGroupDescriptor {
         this.dividerLeftMargin = dividerLeftMargin
         return this
     }
 
-    fun setDividerResource(resourceId: Int): GroupDescriptor {
+    fun setDividerResource(resourceId: Int): CardGroupDescriptor {
         this.dividerResource = resourceId
         return this
     }
 
     override fun getViewClass(): Class<*> {
-        return GroupView::class.java
+        return CardGroupView::class.java
     }
 }
